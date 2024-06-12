@@ -106,16 +106,13 @@ export function ProcedureForm({
   });
 
   function onSubmit(data: { [ROOT_VALS_PROPERTY_NAME]: any }) {
+    const newData = { json: data[ROOT_VALS_PROPERTY_NAME] };
     if (procedure.procedureType === "query") {
-      const newData = { ...data };
-      setQueryInput(newData[ROOT_VALS_PROPERTY_NAME]);
+      setQueryInput(newData);
       setQueryEnabled(true);
       invalidateQuery(data.vals);
     } else {
-      mutation
-        .mutateAsync(data[ROOT_VALS_PROPERTY_NAME])
-        .then(setMutationResponse)
-        .catch();
+      mutation.mutateAsync(newData).then(setMutationResponse).catch();
     }
   }
 

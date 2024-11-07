@@ -21,13 +21,24 @@ import { Field } from "@src/react-app/components/form/Field";
 import { ProcedureFormContextProvider } from "@src/react-app/components/form/ProcedureForm/ProcedureFormContext";
 
 const TRPCErrorSchema = z.object({
-  shape: z.object({
-    message: z.string().optional(),
-  }),
-  data: z.object({
-    code: z.string(),
-    httpStatus: z.number(),
-    stack: z.string().optional(),
+  meta: z.object({
+    responseJSON: z
+      .array(
+        z.object({
+          error: z.object({
+            json: z.object({
+              code: z.number(),
+              data: z.object({
+                code: z.string(),
+                httpStatus: z.number(),
+                stack: z.string().optional(),
+              }),
+              message: z.string().optional(),
+            }),
+          }),
+        })
+      )
+      .min(1),
   }),
 });
 
@@ -56,7 +67,7 @@ export function ProcedureForm({
   const context = trpc.useContext();
 
   function getProcedure() {
-    var cur: typeof trpc | typeof trpc[string] = trpc;
+    var cur: typeof trpc | (typeof trpc)[string] = trpc;
     for (var p of procedure.pathFromRootRouter) {
       // TODO - Maybe figure out these typings?
       //@ts-ignore
@@ -106,16 +117,13 @@ export function ProcedureForm({
   });
 
   function onSubmit(data: { [ROOT_VALS_PROPERTY_NAME]: any }) {
+    const newData = { json: data[ROOT_VALS_PROPERTY_NAME] };
     if (procedure.procedureType === "query") {
-      const newData = { ...data };
-      setQueryInput(newData[ROOT_VALS_PROPERTY_NAME]);
+      setQueryInput(newData);
       setQueryEnabled(true);
-      invalidateQuery(data.vals);
+      invalidateQuery(newData);
     } else {
-      mutation
-        .mutateAsync(data[ROOT_VALS_PROPERTY_NAME])
-        .then(setMutationResponse)
-        .catch();
+      mutation.mutateAsync(newData).then(setMutationResponse).catch();
     }
   }
 
@@ -141,7 +149,9 @@ export function ProcedureForm({
   }
 
   const data =
-    procedure.procedureType === "query" ? query.data : mutationResponse;
+    procedure.procedureType === "query"
+      ? query.data?.json ?? null
+      : mutationResponse;
   const error =
     procedure.procedureType == "query" ? query.error : mutation.error;
 

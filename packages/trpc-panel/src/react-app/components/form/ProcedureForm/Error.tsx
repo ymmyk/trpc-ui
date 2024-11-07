@@ -5,24 +5,28 @@ import { FormSection } from "./FormSection";
 import { TRPCErrorType } from "./index";
 
 export function Error({ error }: { error: TRPCErrorType }) {
-    const messageLength = error.shape.message ? error.shape.message.length : 0;
-    const padTo = Math.max(messageLength, error.data.code.length);
-    return (
-        <FormSection titleClassName="text-error" title="Error">
-            {error.shape.message && (
-                <ErrorRow
-                    title="Message"
-                    text={error.shape.message}
-                    padTitleTo={padTo}
-                />
-            )}
-            <ErrorRow title="Code" text={error.data.code} padTitleTo={padTo} />
-            <ErrorRow
-                title="HTTP Status Code"
-                text={error.data.httpStatus + ""}
-                padTitleTo={padTo}
-            />
-            {error.data.stack && <StackTrace text={error.data.stack} />}
-        </FormSection>
-    );
+  const json = error.meta.responseJSON[0]?.error.json ?? ({} as any);
+  const msg = json.message;
+  const code = json.code;
+  const data = json.data;
+  const messageLength = msg ? msg.length : 0;
+  const padTo = Math.max(messageLength, data.code.length);
+  return (
+    <FormSection titleClassName="text-error" title="Error">
+      {msg && (
+        <ErrorRow
+          title="Message"
+          text={msg + ` (code: ${code})`}
+          padTitleTo={padTo}
+        />
+      )}
+      <ErrorRow title="Code" text={data.code} padTitleTo={padTo} />
+      <ErrorRow
+        title="HTTP Status Code"
+        text={data.httpStatus + ""}
+        padTitleTo={padTo}
+      />
+      {data.stack && <StackTrace text={data.stack} />}
+    </FormSection>
+  );
 }

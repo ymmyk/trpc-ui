@@ -1,3 +1,21 @@
+# Roadmap:
+1. Merge in v11 support fixes from here: https://github.com/iway1/trpc-panel/issues/95
+2. Ensure that it works with multiple input statements
+```typescript
+test2: protectedProcedure
+    .input(z.object({ text: z.string() }))
+    .input(z.object({ text2: z.string() }))
+    .query(({ input }) => {
+      return {
+        greeting: `Hello ${input.text} and ${input.text2}`,
+      };
+    }),
+```
+3. Review existing issues and PRs
+4. See if supporting the zod types at the bottom of the document makes sense
+5. Publish to NPM and add notice to original project
+
+
 # tRPC.panel()
 
 Probably the easiest and cheapest way to build a testing UI and documentation for your tRPC endpoints. tRPC panel automatically generates a UI for manually testing your tRPC backend with 0 overhead:

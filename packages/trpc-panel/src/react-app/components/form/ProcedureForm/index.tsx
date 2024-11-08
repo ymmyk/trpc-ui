@@ -19,6 +19,7 @@ import type { ParsedInputNode } from "@src/parse/parseNodeTypes";
 import { DocumentationSection } from "@src/react-app/components/form/ProcedureForm/DescriptionSection";
 import { Field } from "@src/react-app/components/form/Field";
 import { ProcedureFormContextProvider } from "@src/react-app/components/form/ProcedureForm/ProcedureFormContext";
+import getSize from "string-byte-length";
 
 const TRPCErrorSchema = z.object({
   meta: z.object({
@@ -65,6 +66,9 @@ export function ProcedureForm({
   const [queryInput, setQueryInput] = useState<any>(null);
   const formRef = useRef<HTMLFormElement | null>(null);
   const context = trpc.useContext();
+  const [dataSize, setDataSize] = useState<number | undefined>();
+  const [startTime, setStartTime] = useState<number | undefined>();
+  const [opDuration, setOpDuration] = useState<number | undefined>();
 
   function getProcedure() {
     var cur: typeof trpc | (typeof trpc)[string] = trpc;
@@ -84,6 +88,11 @@ export function ProcedureForm({
       initialData: null,
       retry: false,
       refetchOnWindowFocus: false,
+      onSuccess: (data: unknown) => {
+        if (startTime) setOpDuration(Date.now() - startTime);
+        setDataSize(getSize(JSON.stringify(data)));
+        setStartTime(undefined);
+      },
     });
   })() as UseQueryResult<any>;
 
@@ -100,6 +109,11 @@ export function ProcedureForm({
     //@ts-ignore
     return router.useMutation({
       retry: false,
+      onSuccess: (data: unknown) => {
+        if (startTime) setOpDuration(Date.now() - startTime);
+        setDataSize(getSize(JSON.stringify(data)));
+        setStartTime(undefined);
+      },
     });
   })() as UseMutationResult<any>;
 
@@ -115,8 +129,8 @@ export function ProcedureForm({
       [ROOT_VALS_PROPERTY_NAME]: defaultFormValuesForNode(procedure.node),
     },
   });
-
   function onSubmit(data: { [ROOT_VALS_PROPERTY_NAME]: any }) {
+    setStartTime(Date.now());
     const newData = { json: data[ROOT_VALS_PROPERTY_NAME] };
     if (procedure.procedureType === "query") {
       setQueryInput(newData);
@@ -207,7 +221,9 @@ export function ProcedureForm({
           </div>
         </form>
         <div className="flex flex-col space-y-4">
-          {data && <RequestResult result={data} />}
+          {data && (
+            <RequestResult result={data} size={dataSize} time={opDuration} />
+          )}
           {!data && data !== null && (
             <Response>Successful request but no data was returned</Response>
           )}
@@ -215,7 +231,7 @@ export function ProcedureForm({
             (isTrpcError(error) ? (
               <Error error={error} />
             ) : (
-              <Response>{JSON.stringify(error)}</Response>
+              <Response>{error}</Response>
             ))}
         </div>
       </CollapsableSection>

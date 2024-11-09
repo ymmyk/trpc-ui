@@ -6,7 +6,7 @@ Probably the easiest and cheapest way to build a testing UI and documentation fo
 
 trpc panel moves as fast as your trpc backend with minimal effort.
 
-Check out our [test app](https://app.trpcpanel.io)
+Check out our [test app](https://trpc.aidansunbury.dev/)
 
 ## Fork Notice
 
@@ -81,7 +81,7 @@ Then we can visit the url `http://localhost:3000/api/panel` to use the panel. He
 
 ## Documenting Procedures
 
-As of v1.1.0, `trpc-ui` supports documenting procedures.
+`trpc-ui` supports documenting procedures.
 
 Documentation is opt-in, meaning you only need to set it up if you want to use it. When docs are included for your trpc procedure, a "Docs" section will appear in your procedure:
 

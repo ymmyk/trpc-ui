@@ -57,7 +57,7 @@ console.log(`${serverUrl}${port ? `:${port}` : ""}/${trpcPath}`);
 
 expressApp.get("/", (_req, res) => {
   res.send(
-    renderTrpcPanel(testRouter, {
+    renderTrpcPanel(testRouter as any, {
       url: `${serverUrl}${port ? `:${port}` : ""}/${trpcPath}`,
       transformer: "superjson",
     })

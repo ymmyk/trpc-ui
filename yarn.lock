@@ -1485,7 +1485,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nrwl/nx-cloud@npm:19.1.0, @nrwl/nx-cloud@npm:latest":
+"@nrwl/nx-cloud@latest, @nrwl/nx-cloud@npm:19.1.0":
   version: 19.1.0
   resolution: "@nrwl/nx-cloud@npm:19.1.0"
   dependencies:
@@ -9666,9 +9666,9 @@ __metadata:
   linkType: hard
 
 "object-inspect@npm:^1.13.1":
-  version: 1.13.2
-  resolution: "object-inspect@npm:1.13.2"
-  checksum: 9f850b3c045db60e0e97746e809ee4090d6ce62195af17dd1e9438ac761394a7d8ec4f7906559aea5424eaf61e35d3e53feded2ccd5f62fcc7d9670d3c8eb353
+  version: 1.13.3
+  resolution: "object-inspect@npm:1.13.3"
+  checksum: 8c962102117241e18ea403b84d2521f78291b774b03a29ee80a9863621d88265ffd11d0d7e435c4c2cea0dc2a2fbf8bbc92255737a05536590f2df2e8756f297
   languageName: node
   linkType: hard
 
@@ -11018,11 +11018,11 @@ __metadata:
   linkType: hard
 
 "react-hook-form@npm:^7.39.5":
-  version: 7.53.1
-  resolution: "react-hook-form@npm:7.53.1"
+  version: 7.53.2
+  resolution: "react-hook-form@npm:7.53.2"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 6c0cb09335fda48dd533b5d144c9a7a5692de1d8af0ac4f1fffedefc9ccfb995e44f9213dd2c13a72b7b7cb46c55ab05dfed884c5e64e174b137ecc658da04b5
+  checksum: 37e2dd0e79cd8d3376a7a2cb72ad7b59f0594be499daa898d2c6bec896fc30c2f86e62e8b41bc9d325f77220bd8d76cb31e917f77f1c92ad5740adb1a4cc69e2
   languageName: node
   linkType: hard
 
@@ -12717,7 +12717,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     superjson: ^1.12.0
-    trpc-ui: "*"
+    trpc-ui: 1.0.2
     tsconfig-paths: ^4.1.0
     tsx: ^4.19.2
     typescript: ^5.4.5
@@ -12901,7 +12901,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"trpc-ui@*, trpc-ui@workspace:packages/trpc-ui":
+"trpc-ui@1.0.2, trpc-ui@workspace:packages/trpc-ui":
   version: 0.0.0-use.local
   resolution: "trpc-ui@workspace:packages/trpc-ui"
   dependencies:

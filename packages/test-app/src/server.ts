@@ -12,6 +12,9 @@ const serverUrl = process.env.SERVER_URL || "http://localhost";
 const trpcPath = process.env.TRPC_PATH || "trpc";
 const port = Number(process.env.PORT) || 4000;
 
+console.log("Starting server with environment variables:");
+console.log(process.env);
+
 // to marginally improve local development experience
 const liveReload = process.env.LIVE_RELOAD === "true";
 const simulateDelay = process.env.SIMULATE_DELAY === "true";
@@ -56,6 +59,7 @@ console.log("Starting at url ");
 console.log(`${serverUrl}${port ? `:${port}` : ""}/${trpcPath}`);
 
 expressApp.get("/", (_req, res) => {
+  console.log("Got request");
   res.send(
     renderTrpcPanel(testRouter as any, {
       url: `${serverUrl}${port ? `:${port}` : ""}/${trpcPath}`,

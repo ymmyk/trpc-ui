@@ -62,7 +62,9 @@ expressApp.get("/", (_req, res) => {
   console.log("Got request");
   res.send(
     renderTrpcPanel(testRouter as any, {
-      url: `${serverUrl}${port ? `:${port}` : ""}/${trpcPath}`,
+      url: `${serverUrl}${
+        process.env.NODE_ENV === "production" ? "" : `:${port}`
+      }/${trpcPath}`,
       transformer: "superjson",
     })
   );

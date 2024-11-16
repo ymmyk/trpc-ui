@@ -3,7 +3,12 @@ import { createTRPCRouter, procedure } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 
 const postsRouter = createTRPCRouter({
-  getAllPosts: procedure.query(() => {
+  meta: procedure.meta({
+    description: "This is a router that contains posts"
+  }).query(() => null),
+  getAllPosts: procedure.meta({
+      description: "Simple procedure that returns a list of posts"
+    }).query(() => {
     return [
       {
         id: "asodifjaosdf",

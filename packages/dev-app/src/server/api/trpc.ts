@@ -53,8 +53,10 @@ export const createTRPCContext = (_opts: CreateNextContextOptions) => {
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import type { TRPCPanelMeta } from "trpc-ui";
 
-const t = initTRPC.context<typeof createTRPCContext>().create({
+
+const t = initTRPC.context<typeof createTRPCContext>().meta<TRPCPanelMeta>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
     return {

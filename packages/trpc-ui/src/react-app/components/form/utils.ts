@@ -7,20 +7,23 @@ export function defaultFormValuesForNode(node: ParsedInputNode): any {
       return [];
     case "boolean":
       return;
-    case "discriminated-union":
+    case "discriminated-union": {
       const firstValue = node.discriminatedUnionValues[0]!;
       return defaultFormValuesForNode(
-        node.discriminatedUnionChildrenMap[firstValue]!
+        node.discriminatedUnionChildrenMap[firstValue]!,
       );
+    }
     case "enum":
       return;
     // return node.enumValues[0];
-    case "object":
+    case "object": {
       const obj: any = {};
+      // biome-ignore lint/style/noVar: <This errors when not using var, leave it unless you are going to properly fix it>
       for (var [name, node] of Object.entries(node.children)) {
         obj[name] = defaultFormValuesForNode(node);
       }
       return obj;
+    }
     case "literal":
       return node.value;
     case "string":

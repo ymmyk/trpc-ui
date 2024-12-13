@@ -12712,7 +12712,7 @@ __metadata:
     react: ^18.2.0
     react-dom: ^18.2.0
     superjson: ^1.12.0
-    trpc-ui: 1.0.4
+    trpc-ui: 1.0.6
     tsconfig-paths: ^4.1.0
     tsx: ^4.19.2
     typescript: ^5.4.5
@@ -12913,11 +12913,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"trpc-ui@npm:1.0.4":
-  version: 1.0.4
-  resolution: "trpc-ui@npm:1.0.4"
+"trpc-ui@npm:1.0.6":
+  version: 1.0.6
+  resolution: "trpc-ui@npm:1.0.6"
   dependencies:
     "@textea/json-viewer": ^3.0.0
+    clsx: ^2.1.1
     fuzzysort: ^2.0.4
     nuqs: ^2.2.1
     path: ^0.12.7
@@ -12925,12 +12926,13 @@ __metadata:
     pretty-ms: ^8.0.0
     react-markdown: ^9.0.1
     string-byte-length: ^1.6.0
+    tailwind-merge: ^2.5.5
     url: ^0.11.0
     zod-to-json-schema: ^3.20.0
   peerDependencies:
     "@trpc/server": ^11.0.0-next-beta.264
     zod: ^3.19.1
-  checksum: f56eba5ff76329477fc1e564c7ecf526a4d660d58528138fe1dd7ff82356bdfa559b7281e5310ba3defaf6fc82ec88ae1e2a79d393f6de611fba1fbd22aee411
+  checksum: d6d4a0bf528727e5ec7a633254b598ccee10ce8e633eb2327be7d8e71a60d595ec0a9ea226ef5da6aa12420d1eaea452761a6101705b5ca4e4550a94178bc58f
   languageName: node
   linkType: hard
 

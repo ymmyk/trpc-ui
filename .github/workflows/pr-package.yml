@@ -6,22 +6,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - run: corepack enable
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "yarn"
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      
+      - name: Install node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          registry-url: https://registry.npmjs.org/
+          cache: 'pnpm'
+
+      - name: Install deps
+        run: pnpm install
+      
       - name: Build App
         run: |
-          yarn build:panel
+          pnpm build:panel
     
 
-      - name: Publish with yarn
+      - name: Publish with pnpm
         run: |
             cd packages/trpc-ui
-            yarn install
-            yarn pkg-pr-new publish --packageManager=yarn
+            pnpm install
+            pnpm pkg-pr-new publish --pnpm --packageManager=pnpm

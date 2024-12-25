@@ -7,23 +7,30 @@ assignees: ''
 
 ---
 
-**Describe the bug**
+### Describe the bug
 A clear and concise description of what the bug is.
 
-**To Reproduce**
+### To Reproduce
 Steps to reproduce the behavior:
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-**Expected behavior**
+**trpc-ui version:** (e.g. v1.0.6)
+
+**trpc [adapter](https://trpc.io/docs/server/adapters) used:** (e.g. express)
+
+**Are you using superjson:** (yes/no)
+
+
+### Expected behavior
 A clear and concise description of what you expected to happen.
 
-**Screenshots**
+### Screenshots
 If applicable, add screenshots to help explain your problem.
 
-**Additional context**
+### Additional context
 Add any other context about the problem here.
 
 👍: I have this issue

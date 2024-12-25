@@ -7,14 +7,14 @@ assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+### New Feature Description
+What is the feature you would like to see
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+### Possible Solutions
+What code changes must be made to implement this feature (leave blank if unsure)
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+### Current workarounds
+Are there any hacky / cumbersome ways to achieve this behavior currently (may be N/A)
 
 👍: I would use this feature
 👎: I would not use this feature

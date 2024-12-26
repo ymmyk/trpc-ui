@@ -16,9 +16,10 @@ import { fullFormats } from "ajv-formats/dist/formats";
 import React, { useEffect, useRef, useState } from "react";
 import { type Control, useForm, useFormState } from "react-hook-form";
 import getSize from "string-byte-length";
+import SuperJson from "superjson";
 import { z } from "zod";
 import JSONEditor from "../JSONEditor";
-import { Error } from "./Error";
+import { Error as ErrorComponent } from "./Error";
 import { FormSection } from "./FormSection";
 import { ProcedureFormButton } from "./ProcedureFormButton";
 import { Response } from "./Response";
@@ -131,10 +132,9 @@ export function ProcedureForm({
   function onSubmit(data: { [ROOT_VALS_PROPERTY_NAME]: any }) {
     let newData: any;
     if (options.transformer === "superjson") {
-      newData = { json: data[ROOT_VALS_PROPERTY_NAME] };
-    }
-    else {
-      newData = { ...data[ROOT_VALS_PROPERTY_NAME] }
+      newData = SuperJson.serialize(data[ROOT_VALS_PROPERTY_NAME]);
+    } else {
+      newData = { ...data[ROOT_VALS_PROPERTY_NAME] };
     }
     if (procedure.procedureType === "query") {
       setQueryInput(newData);
@@ -170,14 +170,14 @@ export function ProcedureForm({
   let data: any;
   if (procedure.procedureType === "query") {
     data = query.data ?? null;
-    if (options.transformer === "superjson" && data) {
-      data = data.json;
-    }
   } else {
     data = mutationResponse;
-    if (options.transformer === "superjson" && data) {
-      data = data.json;
-    }
+  }
+
+  // Get raw size before deserialization
+  const size = getSize(JSON.stringify(data));
+  if (options.transformer === "superjson" && data) {
+    data = SuperJson.deserialize(data);
   }
   const error =
     procedure.procedureType === "query" ? query.error : mutation.error;
@@ -265,7 +265,7 @@ export function ProcedureForm({
         </form>
         <div className="flex flex-col space-y-4">
           {data && (
-            <Response size={getSize(JSON.stringify(data))} time={opDuration}>
+            <Response size={size} time={opDuration}>
               {data}
             </Response>
           )}
@@ -274,7 +274,7 @@ export function ProcedureForm({
           )}
           {error &&
             (isTrpcError(error) ? (
-              <Error error={error} />
+              <ErrorComponent error={error} />
             ) : (
               <Response>{error}</Response>
             ))}

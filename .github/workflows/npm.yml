@@ -21,10 +21,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
           cache: 'pnpm'
 
-      - name: Install deps
-        run: pnpm install
-
-      - run: pnpm test:panel
+      - run: pnpm install & pnpm test:panel
 
 
   publish-npm:

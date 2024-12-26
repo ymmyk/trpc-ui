@@ -55,13 +55,11 @@ jobs:
       - name: Build App
         run: |
           pnpm build:panel
-      - name: Copy Readme
-        run: |
-          pnpm cpy:readme
-      - name: Publish with pnpm
+          
+      - name: Publish to npm
         run: |
           cd packages/trpc-ui
           echo "publishing with version ${{ github.event.release.tag_name }}"
-          pnpm publish --access public
+          npm publish --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}

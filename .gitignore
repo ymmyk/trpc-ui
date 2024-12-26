@@ -5,6 +5,9 @@ node_modules
 yarn-error.log
 lib
 
+# local files
+local/*
+
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output

@@ -1,1 +1,1 @@
-packages/trpc-ui/README.MD
+packages/trpc-ui/README.md

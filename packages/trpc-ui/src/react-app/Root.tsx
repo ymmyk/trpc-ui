@@ -94,7 +94,10 @@ function ClientProviders({
 function AppInnards({
   rootRouter,
   options,
-}: { rootRouter: ParsedRouter; options: RenderOptions }) {
+}: {
+  rootRouter: ParsedRouter;
+  options: RenderOptions;
+}) {
   const [sidebarOpen, setSidebarOpen] = useLocalStorage(
     "trpc-panel.show-minimap",
     true,

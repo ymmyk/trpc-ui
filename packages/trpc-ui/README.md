@@ -204,7 +204,7 @@ Submitting superjson only data types like `Date` or `Map` are not yet supported 
 
 ## Contributing
 
-`trpc-ui` welcomes and encourages open source contributions. Please see our [contributing](./CONTRIBUTING.md) guide for information on how to develop locally.
+`trpc-ui` welcomes and encourages open source contributions. Please see our [contributing](./CONTRIBUTING.md) guide for information on how to develop locally. Besides contributing PRs, one of the most helpful things you can to is to look at the existing [feature proposals](https://github.com/aidansunbury/trpc-ui/issues?q=sort%3Aupdated-desc%20is%3Aissue%20is%3Aopen%20label%3Aenhancement) and leave a 👍 on the features that would be most helpful for you. 
 
 ## Comparisons
 
@@ -218,7 +218,7 @@ Submitting superjson only data types like `Date` or `Map` are not yet supported 
 
 ## Limitations
 
-Currently, tRPC panel only works with zod input schemas. There is no current plan to support other input validators, as zod remains the most popular choice for tRPC developers. However, if you would like to see support for another input validator, feel free to open an issue, and look into how we could reduce the amount of validator specific code that needs to be maintained by using something like [standard-schema](https://github.com/standard-schema/standard-schema).
+Currently, tRPC panel only works with zod input schemas. Eventually, the goal is to support any validation library that implements the [Standard Schema](https://standardschema.dev/) spec. However, this will likely require lots of rewrites, as the current codebase is tightly integrated with Zod.
 
 ### Supported zod types
 

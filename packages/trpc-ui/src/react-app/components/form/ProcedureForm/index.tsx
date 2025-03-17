@@ -170,7 +170,10 @@ export function ProcedureForm({
                       onClick={() => {
                         setValue(
                           ROOT_VALS_PROPERTY_NAME,
-                          sample(procedure.inputSchema),
+                          wrapSuperJson(
+                            sample(procedure.inputSchema),
+                            usingSuperJson,
+                          ),
                         );
                       }}
                     >

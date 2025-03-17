@@ -3,6 +3,22 @@ import { z } from "zod";
 import { createTRPCRouter, procedure } from "~/server/api/trpc";
 
 const postsRouter = createTRPCRouter({
+  complexSuperJson: procedure
+    .input(
+      z.object({
+        id: z.bigint(),
+        name: z.string(),
+        createdAt: z.date(),
+        tags: z.set(z.string()),
+        metadata: z.map(z.string(), z.string()),
+      }),
+    )
+    .query(({ input }) => {
+      return {
+        message: "You used superjson!",
+        input: input,
+      };
+    }),
   meta: procedure
     .meta({
       description: "This is a router that contains posts",
@@ -31,13 +47,31 @@ const postsRouter = createTRPCRouter({
   createPost: procedure
     .input(
       z.object({
-        text: z.string(),
+        text: z.string().min(1),
+        nested: z.object({
+          nestedText: z.string(),
+        }),
       }),
     )
     .mutation(({ input }) => {
       return {
+        ...input,
+      };
+    }),
+  dateTest: procedure
+    .input(
+      z.object({
+        date: z.date(),
+        nested: z.object({
+          text: z.string(),
+        }),
+      }),
+    )
+    .mutation(({ input }) => {
+      console.log(input);
+      return {
         id: "aoisdjfoasidjfasodf",
-        text: input.text,
+        time: input.date.getTime(),
       };
     }),
   createNestedPost: procedure

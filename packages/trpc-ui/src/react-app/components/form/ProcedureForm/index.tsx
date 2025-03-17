@@ -20,13 +20,35 @@ import getSize from "string-byte-length";
 import SuperJson from "superjson";
 import { useAsyncDuration } from "../../hooks/useAsyncDuration";
 import { AutoFillIcon } from "../../icons/AutoFillIcon";
-import JSONEditor from "../JSONEditor";
+
+import Editor from "@monaco-editor/react";
 import { ErrorDisplay as ErrorComponent } from "./Error";
 import { FormSection } from "./FormSection";
 import { ProcedureFormButton } from "./ProcedureFormButton";
 import { Response } from "./Response";
 
 export const ROOT_VALS_PROPERTY_NAME = "vals";
+
+const wrapSuperJson = (json: JSON, usingSuperJson: boolean) => {
+  if (!usingSuperJson) {
+    return json;
+  }
+
+  return {
+    json: json,
+    meta: {
+      values: {},
+    },
+  };
+};
+
+interface JSONSchemaType {
+  type: string;
+  properties?: Record<string, JSONSchemaType>;
+  required?: string[];
+  format?: string;
+  [key: string]: any;
+}
 
 // Recurse down the path to get the function to call
 function getUtilsOrProcedure(base: any, procedure: ParsedProcedure) {
@@ -47,6 +69,8 @@ export function ProcedureForm({
   options: RenderOptions;
   name: string;
 }) {
+  const usingSuperJson = options.transformer === "superjson";
+
   // null => request was never sent
   // undefined => request successful but nothing returned from procedure
   const [response, setResponse] = useState<{
@@ -60,28 +84,36 @@ export function ProcedureForm({
   const utils = trpc.useUtils();
   const { mutateAsync } = getUtilsOrProcedure(trpc, procedure).useMutation();
   const fetchFunction = getUtilsOrProcedure(utils, procedure).fetch;
+  const [shouldValidate, setShouldValidate] = useState(true);
 
   const {
     control,
     reset: resetForm,
     handleSubmit,
-    getValues,
+    watch,
     setValue,
   } = useForm({
-    resolver: ajvResolver(wrapJsonSchema(procedure.inputSchema as any), {
-      formats: fullFormats,
-    }),
+    resolver: ajvResolver(
+      shouldValidate
+        ? wrapJsonSchema(procedure.inputSchema as any, {
+            rootPropertyName: ROOT_VALS_PROPERTY_NAME,
+            useSuperJson: usingSuperJson,
+          })
+        : {},
+      {
+        formats: fullFormats,
+      },
+    ),
     defaultValues: {
-      [ROOT_VALS_PROPERTY_NAME]: defaultFormValuesForNode(procedure.node),
+      [ROOT_VALS_PROPERTY_NAME]: wrapSuperJson(
+        defaultFormValuesForNode(procedure.node),
+        usingSuperJson,
+      ),
     },
   });
   async function onSubmit(data: { [ROOT_VALS_PROPERTY_NAME]: any }) {
-    let newData: any;
-    if (options.transformer === "superjson") {
-      newData = SuperJson.serialize(data[ROOT_VALS_PROPERTY_NAME]);
-    } else {
-      newData = data[ROOT_VALS_PROPERTY_NAME];
-    }
+    const newData = data[ROOT_VALS_PROPERTY_NAME];
+
     const apiCaller =
       procedure.procedureType === "query" ? fetchFunction : mutateAsync;
 
@@ -122,27 +154,60 @@ export function ProcedureForm({
               title="Input"
               topRightElement={
                 <div className="flex space-x-1">
+                  {useRawInput && usingSuperJson && (
+                    <a
+                      href="https://github.com/aidansunbury/trpc-ui#superjson-example-and-usage"
+                      className="hover:underline"
+                      target="blank"
+                    >
+                      Why do I see "json" and "meta" keys? ↗
+                    </a>
+                  )}
                   <XButton control={control} reset={resetForm} />
                   <div className="h-6 w-6">
                     <button
                       type="button"
                       onClick={() => {
-                        setValue("vals", sample(procedure.inputSchema));
+                        setValue(
+                          ROOT_VALS_PROPERTY_NAME,
+                          sample(procedure.inputSchema),
+                        );
                       }}
                     >
                       <AutoFillIcon className="h-6 w-6" />
                     </button>
                   </div>
                   <ToggleRawInput onClick={toggleRawInput} />
+                  <label className="flex flex-row items-center">
+                    <input
+                      checked={shouldValidate}
+                      onChange={() => setShouldValidate((prev) => !prev)}
+                      className="mr-2 size-5"
+                      type="checkbox"
+                    />
+                    Validate Input on Client
+                  </label>
                 </div>
               }
             >
               {useRawInput && (
-                <JSONEditor
-                  value={getValues().vals}
-                  onChange={(values) => {
-                    setValue("vals", values);
+                <Editor
+                  defaultLanguage="json"
+                  options={{
+                    minimap: {
+                      enabled: false,
+                    },
+                    formatOnType: true,
                   }}
+                  height={"30vh"}
+                  value={JSON.stringify(
+                    watch(ROOT_VALS_PROPERTY_NAME),
+                    null,
+                    2,
+                  )}
+                  onChange={(value) =>
+                    setValue(ROOT_VALS_PROPERTY_NAME, JSON.parse(value ?? "{}"))
+                  }
                 />
               )}
               {!useRawInput &&
@@ -162,6 +227,7 @@ export function ProcedureForm({
                 ) : (
                   <Field inputNode={procedure.node} control={control} />
                 ))}
+
               <ProcedureFormButton
                 text={`Execute ${name}`}
                 colorScheme={"neutral"}
@@ -179,7 +245,11 @@ export function ProcedureForm({
             ) : (
               <Response
                 time={duration ?? undefined}
-                size={getSize(JSON.stringify(response.response))}
+                size={
+                  usingSuperJson
+                    ? getSize(SuperJson.stringify(response.response))
+                    : getSize(JSON.stringify(response.response))
+                }
               >
                 {response.response}
               </Response>
@@ -224,16 +294,62 @@ function ToggleRawInput({ onClick }: { onClick: () => void }) {
   );
 }
 
-function wrapJsonSchema(jsonSchema: any) {
-  const { $schema, ...rest } = jsonSchema;
+function wrapJsonSchema(
+  jsonSchema: JSONSchemaType,
+  options: {
+    rootPropertyName: string;
+    useSuperJson?: boolean;
+  },
+): JSONSchemaType {
+  const { rootPropertyName, useSuperJson = false } = options;
 
-  return {
-    type: "object",
-    properties: {
-      [ROOT_VALS_PROPERTY_NAME]: rest,
-    },
-    required: [],
-    additionalProperties: false,
-    $schema: "http://json-schema.org/draft-07/schema#",
-  };
+  // Extract and remove $schema to only place it at the top level
+  const { $schema, ...schemaWithoutDollarSchema } = jsonSchema;
+  const finalSchema = $schema || "http://json-schema.org/draft-07/schema#";
+
+  let wrappedSchema: JSONSchemaType;
+
+  if (useSuperJson) {
+    // For SuperJSON structure, we're expecting:
+    // vals -> { json -> actual_schema, meta -> {...} }
+
+    wrappedSchema = {
+      type: "object",
+      properties: {
+        [rootPropertyName]: {
+          type: "object",
+          properties: {
+            json: schemaWithoutDollarSchema,
+            meta: {
+              type: "object",
+              properties: {
+                values: {
+                  type: "object",
+                },
+              },
+            },
+          },
+          required: ["json"],
+          additionalProperties: true,
+        },
+      },
+      required: [rootPropertyName],
+      additionalProperties: true,
+    };
+  } else {
+    // If not using SuperJSON, just wrap under the root property
+    wrappedSchema = {
+      type: "object",
+      properties: {
+        [rootPropertyName]: schemaWithoutDollarSchema,
+      },
+      required: [rootPropertyName],
+      additionalProperties: true,
+    };
+  }
+
+  // Add $schema only at the top level
+  wrappedSchema.$schema = finalSchema;
+
+  return wrappedSchema;
 }

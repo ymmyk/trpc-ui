@@ -54,7 +54,7 @@ app.use("/panel", (_, res) => {
 
   // Dynamically import renderTrpcPanel only in development
   const { renderTrpcPanel } = await import("trpc-ui");
-  
+
   return res.send(
     renderTrpcPanel(myTrpcRouter, {
       url: "http://localhost:4000/trpc", // Base url of your trpc server
@@ -200,11 +200,77 @@ app.use("/panel", (_, res) => {
 });
 ```
 
-Submitting superjson only data types like `Date` or `Map` are not yet supported (they will be soon), but superjson data types returned from the server will be rendered correctly.
+### Superjson example and usage
+
+When you are using superjson, the json editor will show a basic wrapping of superjson input. Your actual json input goes under the _json_ key, and information about how fields should be parsed goes under the _meta_ key. Do not delete the _json_ key or enter your input outside of it, or else your input will not be parsed correctly.
+
+```json
+{
+  "json": {},
+  "meta": {
+    "values": {}
+  }
+}
+```
+
+Let's say on your backend, you want to have a zod validator like this, which supports data types not supported by json directly.
+
+```ts
+import { z } from "zod";
+
+const UserSchema = z.object({
+  id: z.bigint(),
+  name: z.string(),
+  createdAt: z.date(),
+  tags: z.set(z.string()),
+  metadata: z.map(z.string(), z.string()),
+});
+
+type User = z.infer<typeof UserSchema>;
+
+const user: User = {
+  id: BigInt("9007199254740991"),
+  name: "John Doe",
+  createdAt: new Date("2025-03-16T12:00:00Z"),
+  tags: new Set(["admin", "active"]),
+  metadata: new Map([
+    ["lastLogin", new Date("2025-03-15T08:30:00Z")],
+    ["loginCount", 42],
+    ["isPremium", true],
+    ["tier", "gold"],
+  ]),
+};
+```
+
+Enter the json supported equivalent under the _json_ key, and and specify how they should be parsed under the _meta.values_ key. Before validating this data on the backend, superjson will deserialize it back into JavaScript bigints, dates, sets, and maps, meaning it will pass your zod validation!
+
+```json
+{
+  "json": {
+    "id": "9007199254740991",
+    "name": "John Doe",
+    "createdAt": "2025-03-16T12:00:00.000Z",
+    "tags": ["admin", "active"],
+    "metadata": [["tier", "gold"]]
+  },
+  "meta": {
+    "values": {
+      "id": ["bigint"],
+      "createdAt": ["Date"],
+      "tags": ["set"],
+      "metadata": ["map"]
+    }
+  }
+}
+```
+
+**You will likely need to uncheck "validate input on client" in order to be able to send your validation to the backend when using custom superjson inputs**
+
+Also be warned that currently, input fields will not be rendered for superjson only inputs. You will have to input all data manually through the json editor.
 
 ## Contributing
 
-`trpc-ui` welcomes and encourages open source contributions. Please see our [contributing](./CONTRIBUTING.md) guide for information on how to develop locally. Besides contributing PRs, one of the most helpful things you can to is to look at the existing [feature proposals](https://github.com/aidansunbury/trpc-ui/issues?q=sort%3Aupdated-desc%20is%3Aissue%20is%3Aopen%20label%3Aenhancement) and leave a 👍 on the features that would be most helpful for you. 
+`trpc-ui` welcomes and encourages open source contributions. Please see our [contributing](./CONTRIBUTING.md) guide for information on how to develop locally. Besides contributing PRs, one of the most helpful things you can to is to look at the existing [feature proposals](https://github.com/aidansunbury/trpc-ui/issues?q=sort%3Aupdated-desc%20is%3Aissue%20is%3Aopen%20label%3Aenhancement) and leave a 👍 on the features that would be most helpful for you.
 
 ## Comparisons
 

@@ -13,7 +13,8 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "build": "pnpx rollup --bundleConfigAsCjs --config rollup.config.js",
-    "dev": "rollup --config rollup.config.js --watch --bundleConfigAsCjs"
+    "dev": "rollup --config rollup.config.js --watch --bundleConfigAsCjs",
+    "prepare": "pnpm run build"
   },
   "author": "",
   "license": "ISC",

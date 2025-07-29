@@ -51,6 +51,10 @@ export const zodSelectorFunction: ParserSelectorFunction<ZodDefWithType> = (
   def,
   references,
 ) => {
+  if (!def) {
+    return { type: "unsupported", path: references.path };
+  }
+  
   // Check if this is Zod v4 (uses 'type' field) or v3 (uses 'typeName' field)
   const typeIdentifier = hasZodV4 ? def.type : def.typeName;
 

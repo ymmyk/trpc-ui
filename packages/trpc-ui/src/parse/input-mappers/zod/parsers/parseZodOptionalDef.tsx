@@ -1,6 +1,6 @@
-import type { ZodOptionalDef } from "zod";
 import type { ParseFunction, ParsedInputNode } from "../../../parseNodeTypes";
 import { zodSelectorFunction } from "../selector";
+import type { ZodOptionalDef } from "../zod-compat";
 
 export const parseZodOptionalDef: ParseFunction<
   ZodOptionalDef,

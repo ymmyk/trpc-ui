@@ -3,7 +3,7 @@ import type {
   ParseReferences,
   ParsedInputNode,
 } from "@src/parse/parseNodeTypes";
-import type { ZodEffectsDef } from "zod";
+import type { ZodEffectsDef } from "../zod-compat";
 
 export function parseZodEffectsDef(
   def: ZodEffectsDef,

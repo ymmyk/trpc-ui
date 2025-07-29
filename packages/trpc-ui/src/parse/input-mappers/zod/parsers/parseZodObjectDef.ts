@@ -1,5 +1,4 @@
 import { nodePropertiesFromRef } from "@src/parse/utils";
-import type { ZodObjectDef } from "zod";
 import type {
   ObjectNode,
   ParseFunction,
@@ -7,6 +6,7 @@ import type {
   UnsupportedNode,
 } from "../../../parseNodeTypes";
 import { zodSelectorFunction } from "../selector";
+import type { ZodObjectDef } from "../zod-compat";
 
 export const parseZodObjectDef: ParseFunction<
   ZodObjectDef,

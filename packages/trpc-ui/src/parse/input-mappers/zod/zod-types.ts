@@ -1,3 +1,9 @@
-import type { ZodFirstPartyTypeKind, ZodTypeDef } from "zod";
+import * as z from "zod";
 
-export type ZodDefWithType = ZodTypeDef & { typeName: ZodFirstPartyTypeKind };
+// For Zod v3, we use typeName with ZodFirstPartyTypeKind
+// For Zod v4, we use type with string literals
+export type ZodDefWithType = {
+  typeName?: unknown; // v3 uses this
+  type?: string; // v4 uses this
+  [key: string]: unknown; // allow other properties
+};

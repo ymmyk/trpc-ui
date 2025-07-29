@@ -3,7 +3,7 @@ import type {
   ParsedInputNode,
 } from "@src/parse/parseNodeTypes";
 import { nodePropertiesFromRef } from "@src/parse/utils";
-import type { ZodNullDef } from "zod";
+import type { ZodNullDef } from "../zod-compat";
 
 export function parseZodNullDef(
   def: ZodNullDef,

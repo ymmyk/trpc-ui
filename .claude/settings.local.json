@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm test:*)",
+      "Bash(node:*)",
+      "Bash(rm:*)",
+      "Bash(pnpm biome:check:*)",
+      "Bash(pnpm run:*)",
+      "Bash(pnpm -w run biome:check)",
+      "Bash(pnpm -w run biome:check:fix)"
+    ],
+    "deny": []
+  }
+}

@@ -3,7 +3,7 @@ import type {
   ParseReferences,
   ParsedInputNode,
 } from "@src/parse/parseNodeTypes";
-import type { ZodNullableDef } from "zod";
+import type { ZodNullableDef } from "../zod-compat";
 
 export function parseZodNullableDef(
   def: ZodNullableDef,

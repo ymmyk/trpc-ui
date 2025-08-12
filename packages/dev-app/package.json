@@ -6,7 +6,8 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "prepare": "pnpm run build"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.12.2",

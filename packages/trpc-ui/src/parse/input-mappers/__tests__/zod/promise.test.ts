@@ -9,7 +9,7 @@ describe("Parse ZodPromise", () => {
       type: "number",
       path: [],
     };
-    const schema = z.number().promise();
+    const schema = z.promise(z.number());
     expect(parseZodPromiseDef(schema._def, defaultReferences())).toStrictEqual(
       expected,
     );

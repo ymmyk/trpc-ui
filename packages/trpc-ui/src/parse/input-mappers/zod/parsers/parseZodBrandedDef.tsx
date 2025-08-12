@@ -3,7 +3,7 @@ import type {
   ParseReferences,
   ParsedInputNode,
 } from "@src/parse/parseNodeTypes";
-import type { AnyZodObject, ZodBrandedDef } from "zod";
+import type { AnyZodObject, ZodBrandedDef } from "../zod-compat";
 
 export function parseZodBrandedDef(
   def: ZodBrandedDef<AnyZodObject>,

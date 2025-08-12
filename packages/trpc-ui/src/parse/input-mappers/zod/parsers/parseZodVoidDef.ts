@@ -1,5 +1,5 @@
 import type { LiteralNode, ParseReferences } from "@src/parse/parseNodeTypes";
-import type { ZodVoidDef } from "zod";
+import type { ZodVoidDef } from "../zod-compat";
 
 export function parseZodVoidDef(
   _: ZodVoidDef,

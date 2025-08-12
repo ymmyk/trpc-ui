@@ -15,9 +15,10 @@ import type {
   ParseReferences,
   ParsedInputNode,
 } from "@src/parse/parseNodeTypes";
-import { type AnyZodObject, z } from "zod";
+import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { zodSelectorFunction } from "./input-mappers/zod/selector";
+import { type AnyZodObject } from "./input-mappers/zod/zod-compat";
 
 export type ProcedureExtraData = {
   parameterDescriptions: { [path: string]: string };
@@ -91,7 +92,7 @@ function nodeAndInputSchemaFromInputs(
     }
 
     input = inputs.reduce(
-      (acc, input: z.AnyZodObject) => (acc as z.AnyZodObject).merge(input),
+      (acc, input: AnyZodObject) => (acc as AnyZodObject).merge(input),
       emptyZodObject,
     );
   }
@@ -103,11 +104,11 @@ function nodeAndInputSchemaFromInputs(
 
   return {
     parseInputResult: "success",
-    schema: zodToJsonSchema(input as any, {
+    schema: zodToJsonSchema(input as z.ZodType, {
       errorMessages: true,
       $refStrategy: "none",
     }), //
-    node: zodSelectorFunction((input as any)._def, {
+    node: zodSelectorFunction((input as { _def: unknown })._def, {
       path: [],
       options,
       addDataFunctions,
